@@ -1,0 +1,85 @@
+//====================================================
+    //================== NEGATIVE TEST ===================
+    //====================================================
+
+
+    @DataProvider(name = "BookInvalidIds")
+    public Object[][] provideInvalidBookIds() {
+        return new Object[][]{
+                {-1},
+                {201}
+        };
+    }
+    @Test(dataProvider = "BookInvalidIds")
+    @Description("Validate that a specific book can not be retrieved by invalid ID")
+    public void getBookTestNegative(int id){
+        ApiResult<GetBookResponse> result = BooksApi.getBook(id);
+
+        result.getResponse().then().statusCode(404);
+        Assert.assertNull(result.getBody());
+    }
+
+    @Test
+    @Description("")
+    public void createBookTestWithPublishDateNegative() {
+        commonBookRequest.setPublishDate("Bad DateTime");
+        ApiResult<CreateBookResponse> result = BooksApi.createNewBook(commonBookRequest);
+
+        result.getResponse().then().statusCode(400);
+        Assert.assertNull(result.getBody());
+    }
+
+    @Test
+    @Description("")
+    public void createBookTestWithPageCountNegative() {
+        commonBookRequest.setPageCount(-5);
+        ApiResult<CreateBookResponse> result = BooksApi.createNewBook(commonBookRequest);
+
+        result.getResponse().then().statusCode(400);
+        Assert.assertNull(result.getBody());
+    }
+
+    @Test
+    @Description("")
+    public void createBookTestWithTitleNegative() {
+        commonBookRequest.setTitle("");
+        ApiResult<CreateBookResponse> result = BooksApi.createNewBook(commonBookRequest);
+
+        result.getResponse().then().statusCode(400);
+        Assert.assertNull(result.getBody());
+    }
+
+    @Test
+    @Description("")
+    public void updateBookTestWithPublishDateNegative(){
+        UpdateBookRequest updateBookRequest = FakeRestApiProvider.prepareBookUpdateRequest(2);
+        updateBookRequest.setPublishDate("Bad DateTime");
+
+        ApiResult<CommonBookResponse> result = BooksApi.updateBook(updateBookRequest.getId(), updateBookRequest);
+        result.getResponse().then().statusCode(400);
+        Assert.assertNull(result.getBody());
+    }
+
+    @DataProvider(name = "BadIds")
+    public Object[][] provideBadIds() {
+        return new Object[][]{
+                {10, 1},
+                {1, 10}
+        };
+    }
+    @Test(dataProvider="BadIds")
+    @Description("")
+    public void updateBookTestWithBadIdsNegative(int urlId, int bodyId){
+        UpdateBookRequest updateBookRequest = FakeRestApiProvider.prepareBookUpdateRequest(bodyId);
+
+        ApiResult<CommonBookResponse> result = BooksApi.updateBook(urlId, updateBookRequest);
+        result.getResponse().then().statusCode(400);
+        Assert.assertNull(result.getBody());
+    }
+
+    @Test
+    @Description("")
+    void deleteBookTestNegative(){
+        Response response = BooksApi.deleteBook(-1);
+        response.then().statusCode(400);
+    }
