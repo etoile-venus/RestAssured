@@ -2,8 +2,9 @@
 //================== NEGATIVE TEST ===================
 //====================================================
 mkmlijijiujiuuiji
+Nova Linija
 
-@DataProvider(name = "BookInvalidIds")
+@DataProvider(name = "BookInvalidIds")/josJednaLinija
 public Object[][] provideInvalidBookIds() {
     return new Object[][]{
             {-1},
